@@ -1,0 +1,40 @@
+import heapq
+
+def dijkstra(graph, start):
+    # Crear un diccionario para almacenar las distancias desde el nodo de inicio
+    distances = {node: float('infinity') for node in graph}
+    distances[start] = 0
+    
+    # Crear una cola de prioridad (heap) para almacenar los nodos a visitar
+    priority_queue = [(0, start)]
+    
+    while priority_queue:
+        # Obtener el nodo con la distancia mínima
+        current_distance, current_node = heapq.heappop(priority_queue)
+        
+        # Si la distancia actual es mayor que la distancia almacenada, continuar
+        if current_distance > distances[current_node]:
+            continue
+        
+        # Explorar los vecinos del nodo actual
+        for neighbor, weight in graph[current_node].items():
+            distance = current_distance + weight
+            # Si encontramos un camino más corto, actualizar la distancia
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(priority_queue, (distance, neighbor))
+    
+    return distances
+
+# Ejemplo de uso
+graph = {
+    'A': {'B': 1, 'C': 4},
+    'B': {'A': 1, 'C': 2, 'D': 5},
+    'C': {'A': 4, 'B': 2, 'D': 1},
+    'D': {'B': 5, 'C': 1}
+}
+start_node = 'A'
+distances = dijkstra(graph, start_node)
+
+for node, distance in distances.items():
+    print(f'Distancia desde {start_node} a {node}: {distance}')
